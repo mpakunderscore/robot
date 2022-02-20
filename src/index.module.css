@@ -25,6 +25,10 @@ main {
     top: 0;
     height: 100vh;
     /*background: darkgray;*/
+
+    box-sizing: border-box;
+    padding: 20px;
+    font-size: 30px;
 }
 
 main.green {
@@ -33,4 +37,8 @@ main.green {
 
 main.red {
     background: darkred;
+}
+
+#info {
+
 }

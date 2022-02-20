@@ -6,17 +6,17 @@ require('dotenv').config()
 
 let express = require('express')
 const router = express.Router({ strict: true })
-// const {initAPI} = require("./api");
+// const {initAPI} = require("./api")
 
 // let app = express()
 // let server = require('http').Server(app)
 // server.listen(process.env.PORT || 8080)
 
-const app = express();
-const http = require('http');
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
+const app = express()
+const http = require('http')
+const server = http.createServer(app)
+const { Server } = require("socket.io")
+const io = new Server(server)
 
 // initAPI(app).then(r => {})
 
@@ -40,11 +40,18 @@ io.on('connection', (socket) => {
 let timer = setInterval(async () => {
 
     io.emit('state', JSON.stringify({
+        system: await systeminformation.system(),
         cpu: await systeminformation.cpu(),
         battery: await systeminformation.battery(),
-        load: await systeminformation.currentLoad()
+        load: await systeminformation.currentLoad(),
+        time: await systeminformation.time(),
+
+        //'CH340 ' - arduino
+        usb: await systeminformation.usb()
     }))
+
     console.log('EMIT')
+
 }, 1000)
 
 app.use('/', express.static('dist'))
@@ -56,3 +63,24 @@ server.listen(process.env.PORT || 8000, () => {
 // for (let i = 0; i < food.length; i++) {
 //     app.use('/' + food[i].name, express.static('dist'))
 // }
+
+const { SerialPort } = require('serialport')
+const port = new SerialPort({
+    path: '/dev/tty-usbserial1',
+    baudRate: 9600,
+    autoOpen: false,
+})
+
+port.open(function (err) {
+    if (err) {
+        return console.log('Error opening port: ', err.message)
+    }
+
+    // Because there's no callback to write, write errors will be emitted on the port:
+    port.write('main screen turn on')
+})
+
+// The open event is always emitted
+port.on('open', function() {
+    // open logic
+})
