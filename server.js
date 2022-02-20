@@ -37,9 +37,19 @@ io.on('connection', (socket) => {
     console.log('CONNECTED')
 })
 
+let timer = setInterval(async () => {
+
+    io.emit('state', JSON.stringify({
+        cpu: await systeminformation.cpu(),
+        battery: await systeminformation.battery(),
+        load: await systeminformation.currentLoad()
+    }))
+    console.log('EMIT')
+}, 1000)
+
 app.use('/', express.static('dist'))
 
-server.listen(process.env.PORT || 8080, () => {
+server.listen(process.env.PORT || 8000, () => {
     console.log('SERVER UP')
 })
 

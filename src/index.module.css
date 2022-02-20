@@ -1,0 +1,36 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    /*background: gray;*/
+
+    font-family: 'Open Sans', sans-serif;
+    /*font-family: 'Lato', sans-serif;*/
+
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+    /*font-display: optional;*/
+}
+
+body {
+    position: relative;
+    min-height: 100vh;
+    /*padding-top:  env(safe-area-inset-top, 20px);*/
+}
+
+main {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: 0;
+    height: 100vh;
+    /*background: darkgray;*/
+}
+
+main.green {
+    background-color: darkgreen;
+}
+
+main.red {
+    background: darkred;
+}
