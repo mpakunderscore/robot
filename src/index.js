@@ -26,8 +26,11 @@ window.onload = function() {
     let app = document.getElementById('app')
 
     app.onclick = (event) => {
-        console.log(event.clientX / window.screen.width)
-        console.log(event.clientY / window.screen.height)
+
+        let x = event.clientX / window.visualViewport.width
+        let y = event.clientY / window.visualViewport.height
+
+        socket.emit('message', JSON.stringify({x, y}))
     }
 
     let timerTimeout = setInterval(() => {
@@ -73,6 +76,7 @@ window.onload = function() {
         let state = JSON.parse(data)
         lastState = state
         console.log(state)
+
         // console.log(state.usb.find(usb => usb.name.startsWith('CH340')))
         let arduino = state.usb.length > 0 && !!state.usb.find(usb => usb.name.startsWith('CH340'))
         robotStatus.arduino = arduino

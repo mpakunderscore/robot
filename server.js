@@ -18,6 +18,16 @@ const server = http.createServer(app)
 const { Server } = require("socket.io")
 const io = new Server(server)
 
+// SERIAL
+
+const { SerialPort } = require('serialport')
+const port = new SerialPort({
+    path: '/dev/tty.usbserial-110',
+    baudRate: 9600,
+    autoOpen: false,
+})
+
+
 // initAPI(app).then(r => {})
 
 app.get('/stat', async function (request, response) {
@@ -35,6 +45,14 @@ app.get('/stat', async function (request, response) {
 
 io.on('connection', (socket) => {
     console.log('CONNECTED')
+    socket.on('message', (data) => {
+
+        let objectData = JSON.parse(data)
+        console.log(objectData)
+
+        // port.write(objectData.x + ',' + objectData.y)
+        port.write(objectData.x + '')
+    })
 })
 
 let timer = setInterval(async () => {
@@ -50,7 +68,7 @@ let timer = setInterval(async () => {
         usb: await systeminformation.usb()
     }))
 
-    console.log('EMIT')
+    // console.log('EMIT')
 
 }, 1000)
 
@@ -64,20 +82,20 @@ server.listen(process.env.PORT || 8000, () => {
 //     app.use('/' + food[i].name, express.static('dist'))
 // }
 
-const { SerialPort } = require('serialport')
-const port = new SerialPort({
-    path: '/dev/tty-usbserial1',
-    baudRate: 9600,
-    autoOpen: false,
+// const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
+port.on('data', (hexString) => {
+    let data = parseInt(hexString, 16);
+    console.log(data)
 })
 
 port.open(function (err) {
+
     if (err) {
         return console.log('Error opening port: ', err.message)
     }
 
     // Because there's no callback to write, write errors will be emitted on the port:
-    port.write('main screen turn on')
+    port.write('0')
 })
 
 // The open event is always emitted
