@@ -26,9 +26,16 @@ window.onload = function() {
     let app = document.getElementById('app')
 
     app.onclick = (event) => {
-
         let x = event.clientX / window.visualViewport.width
         let y = event.clientY / window.visualViewport.height
+
+        socket.emit('message', JSON.stringify({x, y}))
+    }
+
+    app.ontouchmove = (event) => {
+        console.log(event)
+        let x = event.touches[0].clientX / window.visualViewport.width
+        let y = event.touches[0].clientY / window.visualViewport.height
 
         socket.emit('message', JSON.stringify({x, y}))
     }
@@ -36,7 +43,7 @@ window.onload = function() {
     let timerTimeout = setInterval(() => {
 
         let timeout = new Date().getTime() - lastState.time.current
-        if (timeout > 2000 && app.style.background !== 'orange')
+        if (timeout > 3000 && app.style.background !== 'orange')
             app.style.background = 'orange'
 
         robotStatus.timeout = timeout

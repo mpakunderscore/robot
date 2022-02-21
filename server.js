@@ -2,15 +2,8 @@ const systeminformation = require('systeminformation')
 
 require('dotenv').config()
 
-// const robot = require('./core')
-
 let express = require('express')
 const router = express.Router({ strict: true })
-// const {initAPI} = require("./api")
-
-// let app = express()
-// let server = require('http').Server(app)
-// server.listen(process.env.PORT || 8080)
 
 const app = express()
 const http = require('http')
@@ -21,7 +14,7 @@ const io = new Server(server)
 // SERIAL
 
 const { SerialPort } = require('serialport')
-const port = new SerialPort({
+let port = new SerialPort({
     path: '/dev/tty.usbserial-110',
     baudRate: 9600,
     autoOpen: false,
@@ -34,29 +27,43 @@ app.get('/stat', async function (request, response) {
     response.json(systeminformation)
 })
 
-// app.use(function (req, res, next) {
-//     if (req.path.substr(-1) == '/' && req.path.length > 1) {
-//         let query = req.url.slice(req.path.length)
-//         res.redirect(301, req.path.slice(0, -1) + query)
-//     } else {
-//         next()
-//     }
-// })
 
 io.on('connection', (socket) => {
-    console.log('CONNECTED')
+
+    console.log('WEB SOCKET CONNECTED')
+
     socket.on('message', (data) => {
 
         let objectData = JSON.parse(data)
-        console.log(objectData)
+         console.log(objectData)
 
         // port.write(objectData.x + ',' + objectData.y)
-        port.write(objectData.x + '')
+        let x = Math.floor(objectData.x * 180)
+        console.log(x)
+        port.write(x + ' ')
     })
+})
+
+port.on('data', (arduinoString) => {
+    // console.log(arduinoString) // HEX STRING
+    let data = parseInt(arduinoString)
+    console.log(data)
+    // if (data > 0 && data < 1) {
+    //     let x = data
+    //     console.log(x)
+    // } else {
+    //     // console.error('Error: ' + data)
+    //     // console.error(Math.floor(data))
+    //     let x = data - Math.floor(data)
+    //     if (x > 0 && x < 1)
+    //         console.log(x)
+    // }
+
 })
 
 let timer = setInterval(async () => {
 
+    // We broadcast our state once a sec here, for debug info
     io.emit('state', JSON.stringify({
         system: await systeminformation.system(),
         cpu: await systeminformation.cpu(),
@@ -68,24 +75,16 @@ let timer = setInterval(async () => {
         usb: await systeminformation.usb()
     }))
 
-    // console.log('EMIT')
-
 }, 1000)
 
 app.use('/', express.static('dist'))
 
-server.listen(process.env.PORT || 8000, () => {
-    console.log('SERVER UP')
+app.get('/stat', async function (request, response) {
+    response.json(systeminformation)
 })
 
-// for (let i = 0; i < food.length; i++) {
-//     app.use('/' + food[i].name, express.static('dist'))
-// }
-
-// const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
-port.on('data', (hexString) => {
-    let data = parseInt(hexString, 16);
-    console.log(data)
+server.listen(process.env.PORT || 8000, () => {
+    console.log('SERVER UP')
 })
 
 port.open(function (err) {
@@ -95,10 +94,33 @@ port.open(function (err) {
     }
 
     // Because there's no callback to write, write errors will be emitted on the port:
-    port.write('0')
+    // port.write('180')
 })
 
 // The open event is always emitted
 port.on('open', function() {
+    console.log('SERIAL PORT OPENED')
     // open logic
 })
+
+port.on('close', function(){
+    console.log('SERIAL PORT CLOSED')
+    reconnect()
+})
+
+port.on('error', function (err) {
+    console.error('SERIAL PORT ERROR', err)
+    reconnect()
+})
+
+let reconnect = function () {
+    console.log('SERIAL RECONNECT')
+    setTimeout(function() {
+        console.log('SERIAL RECONNECTING')
+        // port = new SerialPort({
+        //     path: '/dev/tty.usbserial-110',
+        //     baudRate: 9600,
+        //     autoOpen: false,
+        // })
+    }, 2000)
+}
