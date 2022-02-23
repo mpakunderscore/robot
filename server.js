@@ -15,7 +15,8 @@ const io = new Server(server)
 
 const { SerialPort } = require('serialport')
 let port = new SerialPort({
-    path: '/dev/tty.usbserial-110',
+    // path: '/dev/tty.usbserial-110',
+    path: '/dev/tty.usbmodem1101',
     baudRate: 9600,
     autoOpen: false,
 })
@@ -40,7 +41,7 @@ io.on('connection', (socket) => {
         // port.write(objectData.x + ',' + objectData.y)
         let x = Math.floor(objectData.x * 180)
         console.log(x)
-        port.write(x + ' ')
+        port.write(x + '\n')
     })
 })
 
