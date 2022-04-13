@@ -85,7 +85,7 @@ window.onload = function() {
         console.log(state)
 
         // console.log(state.usb.find(usb => usb.name.startsWith('CH340')))
-        let arduino = state.usb.length > 0 && !!state.usb.find(usb => usb.name.startsWith('CH340'))
+        let arduino = state.usb.length > 0 && !!state.usb.find(usb => usb.name.startsWith('CH340') || usb.manufacturer.includes('Arduino'))
         robotStatus.arduino = arduino
         app.innerText = printStatus(robotStatus)
     })
