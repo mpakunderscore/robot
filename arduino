@@ -1,0 +1,96 @@
+#define AMOUNT 4  // кол-во серво
+
+#include "ServoSmooth.h"
+ServoSmooth servos[AMOUNT];
+
+//#include <Servo.h>
+
+Servo servo[8];
+
+int firstAngle = 20;
+int secondAngle = 80;
+
+void stand() {
+
+  servo[0].write(firstAngle);
+  servo[1].write(secondAngle);
+  servo[2].write(180 - firstAngle);
+  servo[3].write(180 - secondAngle);
+
+  //
+  servo[4].write(50);
+  servo[5].write(90);
+  //
+  servo[6].write(180 - 50);
+  servo[7].write(180 - 90);
+}
+
+void sit() {
+  servo[0].write(0);
+  servo[1].write(0);
+  servo[2].write(180);
+  servo[3].write(180);
+
+  servo[4].write(90);
+  servo[5].write(180);
+  servo[6].write(90);
+  servo[7].write(0);
+}
+
+void setup() {
+
+  servo[0].attach(0);
+  servo[1].attach(1);
+  servo[2].attach(2);
+  servo[3].attach(3);
+
+  servo[4].attach(4);
+  servo[5].attach(5);
+  servo[6].attach(6);
+  servo[7].attach(7);
+
+  Serial.begin(9600);
+  Serial.setTimeout(0);
+
+  stand();
+
+  // UP
+  delay(1000);
+
+  sit();
+
+  delay(1000);
+
+  stand();
+
+}
+
+String inString = "";
+String incomingString;
+//long incomingLong;
+int incomingInt;
+int longInt;
+//int x;
+
+void loop() {
+
+    while (Serial.available() > 0) {
+        int inChar = Serial.read();
+        if (isDigit(inChar)) {
+            inString += (char)inChar;
+        }
+
+        if (inChar == '\n') {
+            incomingInt = inString.toInt();
+            Serial.println();
+            inString = "";
+
+            // servo[0].write(incomingInt);
+            // servo[1].write(incomingInt);
+            // servo[2].write(180 - incomingInt);
+            // servo[3].write(180 - incomingInt);
+        }
+    }
+
+    delay(30);
+}

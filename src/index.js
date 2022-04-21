@@ -17,7 +17,7 @@ socket.connect()
 
 let timer
 
-let robotStatus = {arduino: false, timeout: 0}
+let robotStatus = {arduino: false, serial: false, timeout: 0}
 
 let lastState = {time: {current: 0}}
 
@@ -43,8 +43,8 @@ window.onload = function() {
     let timerTimeout = setInterval(() => {
 
         let timeout = new Date().getTime() - lastState.time.current
-        if (timeout > 3000 && app.style.background !== 'orange')
-            app.style.background = 'orange'
+        if (timeout > 3000)
+            app.style.background = '#e17705'
 
         robotStatus.timeout = timeout
         app.innerText = printStatus(robotStatus)
@@ -56,7 +56,7 @@ window.onload = function() {
         const engine = socket.io.engine
         console.log(engine.transport.name) // in most cases, prints 'polling'
 
-        app.style.background = 'green'
+        app.style.background = '#08f26e'
 
         engine.once('upgrade', () => {
             // called when the transport is upgraded (i.e. from HTTP long-polling to WebSocket)
@@ -73,13 +73,13 @@ window.onload = function() {
         })
         engine.on('close', (reason) => {
             console.log('CLOSE')
-            app.style.background = 'red'
+            app.style.background = '#e70101'
             // called when the underlying connection is closed
         })
     })
 
     socket.on('state', (data) => {
-        app.style.background = 'green'
+        app.style.background = '#08f26e'
         let state = JSON.parse(data)
         lastState = state
         console.log(state)
@@ -87,16 +87,17 @@ window.onload = function() {
         // console.log(state.usb.find(usb => usb.name.startsWith('CH340')))
         let arduino = state.usb.length > 0 && !!state.usb.find(usb => usb.name.startsWith('CH340') || usb.manufacturer.includes('Arduino'))
         robotStatus.arduino = arduino
+        robotStatus.serial = state.serial
         app.innerText = printStatus(robotStatus)
     })
 
     let printStatus = (robotStatus) => {
-        return 'Arduino: ' + robotStatus.arduino + '\n' + 'Timeout: ' + (robotStatus.timeout / 1000)
+        return 'Arduino: ' + robotStatus.arduino + '\n' + 'Serial: ' + (robotStatus.serial) + '\n' + 'Timeout: ' + (robotStatus.timeout / 1000)
     }
 
     socket.on('disconnect', () => {
         console.log('DISCONNECT')
-        app.style.background = 'red'
+        app.style.background = '#e70101'
         timer = setTimeout(() => {
             socket.connect()
         }, 1000)
@@ -104,7 +105,7 @@ window.onload = function() {
 
     socket.on('timeout', () => {
         console.log('TIMEOUT')
-        app.style.background = 'yellow'
+        app.style.background = '#e7c304'
         timer = setTimeout(() => {
             socket.connect()
         }, 1000)
@@ -112,7 +113,7 @@ window.onload = function() {
 
     socket.on('connect_error', () => {
         console.log('ERROR')
-        app.style.background = 'yellow'
+        app.style.background = '#e17705'
         timer = setTimeout(() => {
             socket.connect()
         }, 1000)

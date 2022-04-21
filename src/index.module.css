@@ -38,11 +38,11 @@ main {
 }
 
 main.green {
-    background-color: darkgreen;
+    background-color: #08f26e;
 }
 
 main.red {
-    background: darkred;
+    background: #e70101;
 }
 
 #info {

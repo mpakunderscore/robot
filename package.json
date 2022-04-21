@@ -4,7 +4,6 @@
     "description": "",
     "main": "server.js",
     "scripts": {
-        "start": "node server.js",
         "build": "webpack",
         "watch": "webpack --watch",
         "make": "NODE_ENV=production webpack",
@@ -17,10 +16,11 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@serialport/parser-delimiter": "^10.3.0",
         "dotenv": "^16.0.0",
         "express": "^4.17.3",
-        "socket.io": "^4.4.1",
         "serialport": "^10.3.0",
+        "socket.io": "^4.4.1",
         "systeminformation": "^5.11.4"
     },
     "devDependencies": {
