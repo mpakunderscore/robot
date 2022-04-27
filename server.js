@@ -18,9 +18,12 @@ const { SerialPort } = require('serialport')
 
 let serialPort
 
+let raspberry = process.platform === 'linux'
+console.log(process.platform)
+
 let openSerialPort = () => {
     serialPort = new SerialPort({
-        path: '/dev/tty.usbserial-110',
+        path: raspberry ? '/dev/ttyACM0' : '/dev/tty.usbserial-110',
         // path: '/dev/tty.usbmodem1101',
         baudRate: 9600,
         autoOpen: false,
@@ -37,9 +40,9 @@ let globalY = 0
 
 // initAPI(app).then(r => {})
 
-app.get('/stat', async function (request, response) {
-    response.json(systeminformation)
-})
+// app.get('/stat', async function (request, response) {
+//     response.json(systeminformation)
+// })
 
 let a0 = 0
 let a1 = 0
