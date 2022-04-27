@@ -20,8 +20,8 @@ let serialPort
 
 let openSerialPort = () => {
     serialPort = new SerialPort({
-        // path: '/dev/tty.usbserial-110',
-        path: '/dev/tty.usbmodem1101',
+        path: '/dev/tty.usbserial-110',
+        // path: '/dev/tty.usbmodem1101',
         baudRate: 9600,
         autoOpen: false,
     })

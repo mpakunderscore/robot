@@ -1,76 +1,100 @@
 #define AMOUNT 4  // кол-во серво
 
-#include "ServoSmooth.h"
-ServoSmooth servos[AMOUNT];
+//#include "ServoSmooth.h"
+// #include <string>
+//ServoSmooth servos[AMOUNT];
 
-//#include <Servo.h>
+#include <Servo.h>
 
 Servo servo[8];
 
 int firstAngle = 20;
 int secondAngle = 80;
 
-void stand() {
 
+
+void setLegs(int percent) {
+  if (percent < 100 && percent >= 0) {
+//    servo[0].write(firstAngle);
+    servo[1].write(percent * 90);
+//    servo[2].write(180 - firstAngle);
+    servo[3].write(180 - percent * 90 /100);
+
+//    servo[4].write(50);
+    servo[5].write(180 - percent * 90 /100);
+//    servo[6].write(180 - 50);
+    servo[7].write(percent * 90);
+  }
+}
+
+void stand() {
   servo[0].write(firstAngle);
   servo[1].write(secondAngle);
   servo[2].write(180 - firstAngle);
   servo[3].write(180 - secondAngle);
 
-  //
   servo[4].write(50);
   servo[5].write(90);
-  //
   servo[6].write(180 - 50);
   servo[7].write(180 - 90);
 }
 
 void sit() {
   servo[0].write(0);
-  servo[1].write(0);
+  servo[1].write(30);
   servo[2].write(180);
-  servo[3].write(180);
+  servo[3].write(150);
 
   servo[4].write(90);
-  servo[5].write(180);
+  servo[5].write(150);
   servo[6].write(90);
-  servo[7].write(0);
+  servo[7].write(30);
+}
+
+void initServo() {
+  servo[0].attach(4);
+  servo[1].attach(5);
+  servo[2].attach(6);
+  servo[3].attach(7);
+
+  servo[4].attach(0);
+  servo[5].attach(1);
+  servo[6].attach(2);
+  servo[7].attach(3);
+
+  Serial.begin(9600);
+  Serial.setTimeout(0);
 }
 
 void setup() {
 
-  servo[0].attach(0);
-  servo[1].attach(1);
-  servo[2].attach(2);
-  servo[3].attach(3);
-
-  servo[4].attach(4);
-  servo[5].attach(5);
-  servo[6].attach(6);
-  servo[7].attach(7);
-
-  Serial.begin(9600);
-  Serial.setTimeout(0);
+  initServo();
 
   stand();
 
-  // UP
-  delay(1000);
+//  while (true) {
+//    delay(2000);
+//    sit();
+//    delay(2000);
+//    stand();
+//  }
 
-  sit();
-
-  delay(1000);
-
-  stand();
 
 }
 
 String inString = "";
 String incomingString;
+char charBuf[50];
 //long incomingLong;
 int incomingInt;
 int longInt;
 //int x;
+
+int a[9];
+int index = 0;
+
+char buf[52];
+String test = "00\t99\n";
 
 void loop() {
 
@@ -80,15 +104,20 @@ void loop() {
             inString += (char)inChar;
         }
 
-        if (inChar == '\n') {
+        if (inChar == '\t') {
             incomingInt = inString.toInt();
-            Serial.println();
+            a[index] = incomingInt;
+            index++;
             inString = "";
+        }
+        if (inChar == '\n') {
 
-            // servo[0].write(incomingInt);
-            // servo[1].write(incomingInt);
-            // servo[2].write(180 - incomingInt);
-            // servo[3].write(180 - incomingInt);
+          test = String(a[0]) + "\t" + String(a[1]) + "\t" + String(a[2]) + "\t" + String(a[3]) + "\t" + String(a[4]) + "\t" + String(a[5]) + "\t" + String(a[6]) + "\t" + String(a[7]) + "\n";
+          setLegs(a[0]);
+          int n = test.length();
+          char char_array[n + 1];
+          strcpy(buf, test.c_str());
+          Serial.write(buf);
         }
     }
 
