@@ -23,8 +23,8 @@ console.log(process.platform)
 
 let openSerialPort = () => {
     serialPort = new SerialPort({
-        path: raspberry ? '/dev/ttyACM0' : '/dev/tty.usbserial-110',
-        // path: '/dev/tty.usbmodem1101',
+        // path: raspberry ? '/dev/ttyACM0' : '/dev/tty.usbserial-110',
+        path: '/dev/tty.usbmodem1101',
         baudRate: 9600,
         autoOpen: false,
     })
@@ -72,7 +72,17 @@ let setPosition = (x, y) => {
     b6 = y
     b7 = y
 
-    outString = a0 + '\t' + a1 + '\t'+ a2 + '\t'+ a3 + '\t'+ b4 + '\t'+ b5 + '\t' + b6 + '\t' + b7 + '\n'
+    // outString = a0 + '\t' + a1 + '\t'+ a2 + '\t'+ a3 + '\t'+ b4 + '\t'+ b5 + '\t' + b6 + '\t' + b7 + '\n'
+    outString = String.fromCharCode(a0) +
+        String.fromCharCode(a1) +
+        String.fromCharCode(a2) +
+        String.fromCharCode(a3) +
+        String.fromCharCode(b4) +
+        String.fromCharCode(b5) +
+        String.fromCharCode(b6) +
+        String.fromCharCode(b7) + '\n'
+
+    console.log(outString)
     serialPort.write(outString)
 }
 
