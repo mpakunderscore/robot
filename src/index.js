@@ -29,6 +29,8 @@ window.onload = function() {
         let x = event.clientX / window.visualViewport.width
         let y = event.clientY / window.visualViewport.height
 
+        console.log(event)
+
         socket.emit('message', JSON.stringify({x, y}))
     }
 
