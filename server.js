@@ -23,7 +23,7 @@ console.log(process.platform)
 
 let openSerialPort = () => {
     serialPort = new SerialPort({
-        path: raspberry ? '/dev/ttyACM0' : '/dev/tty.usbserial-110',
+        path: raspberry ? '/dev/ttyACM0' : '/dev/tty.usbmodem1101',
         // path: '/dev/tty.usbmodem1101',
         baudRate: 9600,
         autoOpen: false,
@@ -214,3 +214,7 @@ let reconnect = function () {
         } catch (e) {}
     }, 2000)
 }
+
+process.on('uncaughtException', (err) => {
+    console.log(`Caught exception: ${err}`);
+});
