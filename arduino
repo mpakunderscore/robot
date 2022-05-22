@@ -32,14 +32,14 @@ void setLegs(int percent) {
 
 void setLegs2(int percent0, int percent1, int percent2, int percent3, int percent4, int percent5, int percent6, int percent7) {
   //  percent = (percent / 100) * 180;
-   servo[0].write(percent0);
+//   servo[0].write(percent0);
   servo[1].write(percent1);
-   servo[2].write(percent2);
+//   servo[2].write(percent2);
   servo[3].write(180 - percent3);
 
-   servo[4].write(4);
+//   servo[4].write(4);
   servo[5].write(180 - percent5);
-   servo[6].write(percent6);
+//   servo[6].write(percent6);
   servo[7].write(percent7);
 }
 
@@ -87,41 +87,16 @@ void setup() {
   initServo();
 
   stand();
-
-  //
-  //  while (true) {
-  //    delay(2000);
-  //    setLegs2(30);
-  //    delay(2000);
-  //    setLegs2(90);
-  //  }
-
-
 }
 
-String inString = "";
-String incomingString;
-char charBuf[50];
-//long incomingLong;
-int incomingInt;
-int longInt;
-//int x;
-
 int a[8];
-int index = 0;
-
-char buf[52];
-String test = "00\t99\n";
 int counter = 0;
 
 void loop() {
 
   while (Serial.available() > 0) {
     int inChar = Serial.read();
-
     if (inChar != 10) {
-      //          Serial.println(inChar);
-      //          setLegs2(inChar);
       a[counter] = inChar;
       Serial.println(a[counter]);
       counter++;
@@ -130,39 +105,8 @@ void loop() {
       counter = 0;
     }
 
-    //        if (isDigit(inChar)) {
-    //            inString += (char)inChar;
-    //            Serial.println(inString);
-    //        }
-    //
-    //        incomingInt = inString.toInt();
-    //        setLegs2(incomingInt);
-    //        a[index] = incomingInt;
-    ////
-    //        if (inChar == '\t') {
-    ////            incomingInt = inString.toInt();
-    //            a[index] = inChar;
-    ////            index++;
-    ////            inString = "";
-    //        }
-    //
-    //
-//    if (a[7] == '\t') {
-//      setLegs2(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7]);
-//    }
-    //
-    //          inString = "";
-    //          test = String(a[0]) + "\t" + String(a[1]) + "\t" + String(a[2]) + "\t" + String(a[3]) + "\t" + String(a[4]) + "\t" + String(a[5]) + "\t" + String(a[6]) + "\t" + String(a[7]);
-
-    //      //    int n = test.length();
-    //      //    char char_array[n + 1];
-    //          strcpy(buf, test.c_str());
-    //          Serial.write(buf);
-    //        }
-
     delay(10);
   }
 
   delay(5);
-
 }
