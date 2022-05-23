@@ -32,6 +32,8 @@ let openSerialPort = () => {
 
 openSerialPort()
 
+let multiplicator = 90
+
 let serialStatus = ''
 
 let globalX = 0
@@ -61,28 +63,53 @@ let c3 = 0
 
 let outString = ''
 
+let positions = [
+    {x: 0.2, y: 0.8},
+    {x: 0.1, y: 0.4},
+    {x: 0, y: 0},
+    {x: 0.25, y: 0},
+    {x: 0.5, y: 0},
+    {x: 0.7, y: 0.4},
+    {x: 0.8, y: 0.8},
+]
+
+
+let iteration
+let stepTimeout = setInterval(() => {
+
+    Math.floor(objectData.x * multiplicator)
+
+    serialWrite()
+
+}, 250)
+
 let setPosition = (x, y) => {
     a0 = x
-    a1 = x
+    a1 = y
     a2 = x
-    a3 = x
+    a3 = y
 
-    b4 = y
+    b4 = x
     b5 = y
-    b6 = y
+    b6 = x
     b7 = y
 
     // outString = a0 + '\t' + a1 + '\t'+ a2 + '\t'+ a3 + '\t'+ b4 + '\t'+ b5 + '\t' + b6 + '\t' + b7 + '\n'
-    outString = String.fromCharCode(a0) +
-        String.fromCharCode(a1) +
-        String.fromCharCode(a2) +
-        String.fromCharCode(a3) +
-        String.fromCharCode(b4) +
-        String.fromCharCode(b5) +
-        String.fromCharCode(b6) +
-        String.fromCharCode(b7) + '\n'
+    serialWrite(a0, a1, a2, a3, b4, b5, b6, b7)
+}
 
-    console.log(outString)
+let serialWrite = (x0, x1, x2, x3, x4, x5, x6, x7) => {
+    // outString = a0 + '\t' + a1 + '\t'+ a2 + '\t'+ a3 + '\t'+ b4 + '\t'+ b5 + '\t' + b6 + '\t' + b7 + '\n'
+    outString = String.fromCharCode(x0) +
+        String.fromCharCode(x1) +
+        String.fromCharCode(x2) +
+        String.fromCharCode(x3) +
+        String.fromCharCode(x4) +
+        String.fromCharCode(x5) +
+        String.fromCharCode(x6) +
+        String.fromCharCode(x7) + '\n'
+
+    // console.warn(outString)
     serialPort.write(outString)
 }
 
@@ -94,11 +121,16 @@ io.on('connection', (socket) => {
     socket.on('message', (data) => {
 
         let objectData = JSON.parse(data)
-         // console.log(objectData)
+         console.log(objectData)
+
+        console.log(objectData.x + ' ' + objectData.y)
 
         // port.write(objectData.x + ',' + objectData.y)
-        let x = Math.floor(objectData.x * 100)
-        let y = Math.floor(100 - objectData.y * 100)
+        let x = Math.floor(objectData.x * multiplicator)
+        let y = Math.floor(objectData.y * multiplicator)
+
+        console.log(x + ' ' + y)
+
         globalX = x
         globalY = y
 
@@ -113,7 +145,7 @@ const parser = serialPort.pipe(new DelimiterParser({ delimiter: "\n" }))
 parser.on('data', arduinoString => {
     let buf = Buffer.from(arduinoString, "hex")
     let data = buf.toString("utf8")
-    console.log(data.replace('�', '').trim().split('\t'))
+    // console.log(data)
 })
 
 
@@ -142,6 +174,7 @@ let timerFPS = setInterval(async () => {
 
     // console.log('SERVER FPS')
     // serialPort.write(globalX + '\n')
+
 
 }, 30)
 

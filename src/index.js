@@ -26,16 +26,19 @@ window.onload = function() {
     let app = document.getElementById('app')
 
     app.onclick = (event) => {
+        // console.log(event)
+
+        console.warn({clientX: event.clientX, clientY: event.clientY})
+
         let x = event.clientX / window.visualViewport.width
-        let y = event.clientY / window.visualViewport.height
+        let y = 1 - event.clientY / window.visualViewport.height
 
-        console.log(event)
-
+        console.log({x, y})
         socket.emit('message', JSON.stringify({x, y}))
     }
 
     app.ontouchmove = (event) => {
-        console.log(event)
+        // console.log(event)
         let x = event.touches[0].clientX / window.visualViewport.width
         let y = event.touches[0].clientY / window.visualViewport.height
 

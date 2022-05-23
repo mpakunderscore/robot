@@ -29,8 +29,8 @@ main {
     left: 0;
     width: 100%;
     top: 0;
-    bottom: 50%;
-    /*height: 100vh;*/
+    /*bottom: 50%;*/
+    height: 100vh;
     /*background: darkgray;*/
 
     box-sizing: border-box;

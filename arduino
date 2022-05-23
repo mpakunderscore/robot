@@ -1,7 +1,6 @@
-#define AMOUNT 4  // кол-во серво
+#define AMOUNT 8  // кол-во серво
 
 //#include "ServoSmooth.h"
-// #include <string>
 //ServoSmooth servos[AMOUNT];
 
 #include <Servo.h>
@@ -11,35 +10,16 @@ Servo servo[8];
 int firstAngle = 20;
 int secondAngle = 80;
 
-
-
-void setLegs(int percent) {
-
-
-
-  if (percent < 100 && percent >= 0) {
-    //    servo[0].write(firstAngle);
-    servo[1].write(percent * 90);
-    //    servo[2].write(180 - firstAngle);
-    servo[3].write(180 - percent * 90 / 100);
-
-    //    servo[4].write(50);
-    servo[5].write(percent * 90 / 100);
-    //    servo[6].write(180 - 50);
-    servo[7].write(180 - percent * 90);
-  }
-}
-
 void setLegs2(int percent0, int percent1, int percent2, int percent3, int percent4, int percent5, int percent6, int percent7) {
-  //  percent = (percent / 100) * 180;
-//   servo[0].write(percent0);
+
+  servo[0].write(percent0);
   servo[1].write(percent1);
-//   servo[2].write(percent2);
+  servo[2].write(180 - percent2);
   servo[3].write(180 - percent3);
 
-//   servo[4].write(4);
+  servo[4].write(90 - percent4);
   servo[5].write(180 - percent5);
-//   servo[6].write(percent6);
+  servo[6].write(90 + percent6);
   servo[7].write(percent7);
 }
 
