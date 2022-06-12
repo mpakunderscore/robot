@@ -3,18 +3,18 @@ const systeminformation = require('systeminformation')
 require('dotenv').config()
 
 let express = require('express')
-const router = express.Router({ strict: true })
+const router = express.Router({strict: true})
 
 const app = express()
 const http = require('http')
 const server = http.createServer(app)
-const { Server } = require("socket.io")
+const {Server} = require("socket.io")
 const io = new Server(server)
 
 // SERIAL
 
-const { DelimiterParser } = require('@serialport/parser-delimiter')
-const { SerialPort } = require('serialport')
+const {DelimiterParser} = require('@serialport/parser-delimiter')
+const {SerialPort} = require('serialport')
 
 let serialPort
 
@@ -64,24 +64,77 @@ let c3 = 0
 let outString = ''
 
 let positions = [
-    {x: 0.2, y: 0.8},
+    {x: 0.2, y: 1.0},
     {x: 0.1, y: 0.4},
-    {x: 0, y: 0},
-    {x: 0.25, y: 0},
-    {x: 0.5, y: 0},
+    {x: 0, y: 0.3},
+    {x: 0.25, y: 0.3},
+    {x: 0.5, y: 0.3},
     {x: 0.7, y: 0.4},
-    {x: 0.8, y: 0.8},
+    {x: 0.8, y: 1.0},
+    {x: 0.5, y: 0.9},
 ]
 
+let stepTime = 1000
 
-let iteration
-let stepTimeout = setInterval(() => {
+let iteration0 = 0
+let iteration1 = 2
+let iteration2 = 4
+let iteration3 = 6
 
-    Math.floor(objectData.x * multiplicator)
+// let stepTimeout = setInterval(() => {
+//
+//     if (iteration0 > 7)
+//         iteration0 = 0
+//
+//     if (iteration1 > 7)
+//         iteration1 = 0
+//
+//     if (iteration2 > 7)
+//         iteration2 = 0
+//
+//     if (iteration3 > 7)
+//         iteration3 = 0
+//
+//     serialWrite(
+//         Math.floor(positions[iteration1].x * multiplicator), Math.floor(positions[iteration1].y * multiplicator),
+//         Math.floor(positions[iteration3].x * multiplicator), Math.floor(positions[iteration3].y * multiplicator),
+//         Math.floor(positions[iteration2].x * multiplicator), Math.floor(positions[iteration2].y * multiplicator),
+//         Math.floor(positions[iteration0].x * multiplicator), Math.floor(positions[iteration0].y * multiplicator))
+//
+//     iteration0++
+//     iteration1++
+//     iteration2++
+//     iteration3++
+//
+//     console.log('STEP')
+//
+// }, stepTime)
 
-    serialWrite()
+let positions2 = [
+    {x: 0.0, y: 0.5},
+    {x: 0.0, y: 0.5},
+    {x: 1.0, y: 0.8},
+    {x: 1.0, y: 0.8}
+]
 
-}, 250)
+// let stepTimeout = setInterval(() => {
+//
+//     if (iteration0 > 3)
+//         iteration0 = 0
+//
+//     serialWrite(
+//         Math.floor(positions2[iteration0].x * multiplicator), Math.floor(positions2[iteration0].y * multiplicator),
+//         Math.floor(positions2[iteration0].x * multiplicator), Math.floor(positions2[iteration0].y * multiplicator),
+//         Math.floor(positions2[iteration0].x * multiplicator), Math.floor(positions2[iteration0].y * multiplicator),
+//         Math.floor(positions2[iteration0].x * multiplicator), Math.floor(positions2[iteration0].y * multiplicator))
+//
+//     iteration0++
+//
+//
+//     console.log('STEP')
+//
+// }, stepTime)
+
 
 let setPosition = (x, y) => {
     a0 = x
@@ -94,12 +147,14 @@ let setPosition = (x, y) => {
     b6 = x
     b7 = y
 
-    // outString = a0 + '\t' + a1 + '\t'+ a2 + '\t'+ a3 + '\t'+ b4 + '\t'+ b5 + '\t' + b6 + '\t' + b7 + '\n'
+    // outString = a0 + '/' + a1 + '/'+ a2 + '/'+ a3 + '/'+ b4 + '/'+ b5 + '/' + b6 + '/' + b7 + '\n'
     serialWrite(a0, a1, a2, a3, b4, b5, b6, b7)
 }
 
 let serialWrite = (x0, x1, x2, x3, x4, x5, x6, x7) => {
-    // outString = a0 + '\t' + a1 + '\t'+ a2 + '\t'+ a3 + '\t'+ b4 + '\t'+ b5 + '\t' + b6 + '\t' + b7 + '\n'
+
+    // console.log(x0)
+    console.log(x0 + '/' + x1 + '/'+ x2 + '/'+ x3 + '/'+ x4 + '/'+ x5 + '/' + x6 + '/' + x7)
     outString = String.fromCharCode(x0) +
         String.fromCharCode(x1) +
         String.fromCharCode(x2) +
@@ -118,10 +173,22 @@ io.on('connection', (socket) => {
 
     console.log('WEB SOCKET CONNECTED')
 
+
+    socket.on('sliders', (data) => {
+        let objectData = JSON.parse(data)
+        console.log(objectData)
+
+        serialWrite(
+            Math.floor(objectData.forwardTop), Math.floor(objectData.forwardBottom),
+            Math.floor(objectData.forwardTop), Math.floor(objectData.forwardBottom),
+            Math.floor(objectData.backTop), Math.floor(objectData.backBottom),
+            Math.floor(objectData.backTop), Math.floor(objectData.backBottom))
+    })
+
     socket.on('message', (data) => {
 
         let objectData = JSON.parse(data)
-         console.log(objectData)
+        console.log(objectData)
 
         console.log(objectData.x + ' ' + objectData.y)
 
@@ -141,7 +208,7 @@ io.on('connection', (socket) => {
     })
 })
 
-const parser = serialPort.pipe(new DelimiterParser({ delimiter: "\n" }))
+const parser = serialPort.pipe(new DelimiterParser({delimiter: "\n"}))
 parser.on('data', arduinoString => {
     let buf = Buffer.from(arduinoString, "hex")
     let data = buf.toString("utf8")
@@ -216,14 +283,14 @@ serialPort.open(function (err) {
 })
 
 // The open event is always emitted
-serialPort.on('open', function() {
+serialPort.on('open', function () {
     console.log('SERIAL PORT OPENED')
     serialStatus = 'open'
     // open logic
     clearInterval(reconnectInterval)
 })
 
-serialPort.on('close', function(){
+serialPort.on('close', function () {
     console.log('SERIAL PORT CLOSED')
     reconnect()
     serialStatus = 'close'
@@ -240,11 +307,13 @@ let reconnectInterval
 let reconnect = function () {
     console.log('SERIAL RECONNECT')
     serialStatus = 'reconnect'
-    reconnectInterval = setInterval(function() {
+    reconnectInterval = setInterval(function () {
         console.log('SERIAL RECONNECTING...')
         try {
-            serialPort.open(function (err) {})
-        } catch (e) {}
+            serialPort.open(function (err) {
+            })
+        } catch (e) {
+        }
     }, 2000)
 }
 

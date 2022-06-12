@@ -1,6 +1,7 @@
 import io from 'socket.io-client'
 
 import styles from './index.module.css'
+import {generateSliders} from "./controls";
 // import systeminformation from "systeminformation";
 
 const port = 8000
@@ -23,7 +24,14 @@ let lastState = {time: {current: 0}}
 
 window.onload = function() {
 
-    let app = document.getElementById('app')
+    console.log('START')
+
+    generateSliders()
+
+    let app = document.getElementById('background')
+    app.classList.add(styles.info)
+    let status = document.getElementById('status')
+    status.classList.add(styles.status)
 
     app.onclick = (event) => {
         // console.log(event)
@@ -31,7 +39,7 @@ window.onload = function() {
         console.warn({clientX: event.clientX, clientY: event.clientY})
 
         let x = event.clientX / window.visualViewport.width
-        let y = 1 - event.clientY / window.visualViewport.height
+        let y = (1 - event.clientY / window.visualViewport.height) * 2
 
         console.log({x, y})
         socket.emit('message', JSON.stringify({x, y}))
@@ -40,8 +48,9 @@ window.onload = function() {
     app.ontouchmove = (event) => {
         // console.log(event)
         let x = event.touches[0].clientX / window.visualViewport.width
-        let y = event.touches[0].clientY / window.visualViewport.height
+        let y = (1 - event.touches[0].clientY / window.visualViewport.height) * 2
 
+        console.log({x, y})
         socket.emit('message', JSON.stringify({x, y}))
     }
 
@@ -52,7 +61,7 @@ window.onload = function() {
             app.style.background = '#e17705'
 
         robotStatus.timeout = timeout
-        app.innerText = printStatus(robotStatus)
+        status.innerText = printStatus(robotStatus)
 
     }, 1000)
 
@@ -93,7 +102,7 @@ window.onload = function() {
         let arduino = state.usb.length > 0 && !!state.usb.find(usb => usb.name.startsWith('CH340') || usb.manufacturer.includes('Arduino'))
         robotStatus.arduino = arduino
         robotStatus.serial = state.serial
-        app.innerText = printStatus(robotStatus)
+        status.innerText = printStatus(robotStatus)
     })
 
     let printStatus = (robotStatus) => {
@@ -124,3 +133,5 @@ window.onload = function() {
         }, 1000)
     })
 }
+
+export {socket}

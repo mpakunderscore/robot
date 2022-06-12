@@ -34,7 +34,7 @@ main {
     /*background: darkgray;*/
 
     box-sizing: border-box;
-    padding: 20px;
+    /*padding: 20px;*/
     font-size: 30px;
 }
 
@@ -46,8 +46,74 @@ main.red {
     background: #e70101;
 }
 
-#info {
+.info {
+    width: 100%;
+    height: 50vh;
 
+}
+
+.status {
+    padding: 20px;
+}
+
+
+
+
+input.slider {
+    background: yellow;
+}
+
+.controls {
+    position: relative;
+    width: 100%;
+    height: 50vh;
+    background: ghostwhite;
+}
+
+input {
+    background: gray;
+    height: 50px;
+    width: 30%;
+}
+
+input:focus {
+    outline: none;
+}
+
+input.backBottom {
+    position: absolute;
+    right: 0;
+    bottom: 100px;
+    background: red;
+
+    transform: rotate(45deg);
+}
+
+input.backTop {
+    position: absolute;
+    right: 0;
+    top: 100px;
+    background: red !important;
+
+    transform: rotate(135deg);
+}
+
+input.forwardBottom {
+    position: absolute;
+    left: 0;
+    bottom: 100px;
+    background: red;
+
+    transform: rotate(45deg);
+}
+
+input.forwardTop {
+    position: absolute;
+    left: 0;
+    top: 100px;
+    background: red;
+
+    transform: rotate(135deg);
 }
 
 @media screen and (max-width: 480px) {
