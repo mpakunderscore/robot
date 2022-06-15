@@ -68,6 +68,7 @@ input.slider {
     width: 100%;
     height: 50vh;
     background: ghostwhite;
+    text-align: center;
 }
 
 input {

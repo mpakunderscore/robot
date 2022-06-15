@@ -32,9 +32,9 @@ let openSerialPort = () => {
 
 openSerialPort()
 
-let multiplicator = 90
+let multiplicator = 120
 
-let serialStatus = ''
+let serialStatus = false
 
 let globalX = 0
 let globalY = 0
@@ -63,15 +63,51 @@ let c3 = 0
 
 let outString = ''
 
+// let positions = [
+//     {x: 0.2, y: 1.0},
+//     {x: 0.1, y: 0.4},
+//     {x: 0, y: 0.3},
+//     {x: 0.25, y: 0.3},
+//     {x: 0.5, y: 0.3},
+//     {x: 0.7, y: 0.4},
+//     {x: 0.8, y: 1.0},
+//     {x: 0.5, y: 0.9},
+// ]
+
 let positions = [
-    {x: 0.2, y: 1.0},
-    {x: 0.1, y: 0.4},
-    {x: 0, y: 0.3},
-    {x: 0.25, y: 0.3},
-    {x: 0.5, y: 0.3},
-    {x: 0.7, y: 0.4},
-    {x: 0.8, y: 1.0},
-    {x: 0.5, y: 0.9},
+    {x: 0.75, y: 1.0},
+    {x: 0.38, y: 0.5},
+    {x: 0.26, y: 0.4},
+    {x: 0.08, y: 0.35},
+    {x: 0.03, y: 0.3},
+    {x: 0.0, y: 0.3},
+    {x: 0.0, y: 0.11},
+    {x: 0.32, y: 0.27},
+    //fast
+]
+
+let positionsHead = [
+    {x: 80, y: 120},
+    {x: 50, y: 94},
+    {x: 37, y: 80},
+    {x: 24, y: 64},
+    {x: 12, y: 64},
+    {x: 12, y: 42},
+    {x: 0, y: 0},
+    //fast
+    {x: 90, y: 90},
+]
+
+let positionsBack = [
+    {x: 80, y: 120},
+    {x: 60, y: 92},
+    {x: 40, y: 80},
+    {x: 34, y: 68},
+    {x: 22, y: 67},
+    {x: 22, y: 80},
+    {x: 0, y: 23},
+    //fast
+    {x: 90, y: 90},
 ]
 
 let stepTime = 1000
@@ -81,41 +117,53 @@ let iteration1 = 2
 let iteration2 = 4
 let iteration3 = 6
 
-// let stepTimeout = setInterval(() => {
-//
-//     if (iteration0 > 7)
-//         iteration0 = 0
-//
-//     if (iteration1 > 7)
-//         iteration1 = 0
-//
-//     if (iteration2 > 7)
-//         iteration2 = 0
-//
-//     if (iteration3 > 7)
-//         iteration3 = 0
-//
-//     serialWrite(
-//         Math.floor(positions[iteration1].x * multiplicator), Math.floor(positions[iteration1].y * multiplicator),
-//         Math.floor(positions[iteration3].x * multiplicator), Math.floor(positions[iteration3].y * multiplicator),
-//         Math.floor(positions[iteration2].x * multiplicator), Math.floor(positions[iteration2].y * multiplicator),
-//         Math.floor(positions[iteration0].x * multiplicator), Math.floor(positions[iteration0].y * multiplicator))
-//
-//     iteration0++
-//     iteration1++
-//     iteration2++
-//     iteration3++
-//
-//     console.log('STEP')
-//
-// }, stepTime)
+let stepTimeout
+let walk = () => {
+    stepTimeout = setInterval(() => {
 
-let positions2 = [
-    {x: 0.0, y: 0.5},
-    {x: 0.0, y: 0.5},
-    {x: 1.0, y: 0.8},
-    {x: 1.0, y: 0.8}
-]
+        if (iteration0 > 7)
+            iteration0 = 0
+
+        if (iteration1 > 7)
+            iteration1 = 0
+
+        if (iteration2 > 7)
+            iteration2 = 0
+
+        if (iteration3 > 7)
+            iteration3 = 0
+
+        // if (iteration0 === 7)
+        //     iteration0 = 0
+        // if (iteration1 === 7)
+        //     iteration1 = 0
+        // if (iteration2 === 7)
+        //     iteration2 = 0
+        // if (iteration3 === 7)
+        //     iteration3 = 0
+
+        serialWrite(
+            Math.floor(positionsHead[iteration1].x), Math.floor(positionsHead[iteration1].y),
+            Math.floor(positionsHead[iteration3].x), Math.floor(positionsHead[iteration3].y),
+            Math.floor(positionsBack[iteration2].x), Math.floor(positionsBack[iteration2].y),
+            Math.floor(positionsBack[iteration0].x), Math.floor(positionsBack[iteration0].y))
+
+        iteration0++
+        iteration1++
+        iteration2++
+        iteration3++
+
+        console.log('STEP')
+
+    }, stepTime)
+}
+
+// let positions2 = [
+//     {x: 0.0, y: 0.5},
+//     {x: 0.0, y: 0.5},
+//     {x: 1.0, y: 0.8},
+//     {x: 1.0, y: 0.8}
+// ]
 
 // let stepTimeout = setInterval(() => {
 //
@@ -154,7 +202,7 @@ let setPosition = (x, y) => {
 let serialWrite = (x0, x1, x2, x3, x4, x5, x6, x7) => {
 
     // console.log(x0)
-    console.log(x0 + '/' + x1 + '/'+ x2 + '/'+ x3 + '/'+ x4 + '/'+ x5 + '/' + x6 + '/' + x7)
+    console.log(x0 + '/' + x1 + '/' + x2 + '/' + x3 + '/' + x4 + '/' + x5 + '/' + x6 + '/' + x7)
     outString = String.fromCharCode(x0) +
         String.fromCharCode(x1) +
         String.fromCharCode(x2) +
@@ -173,6 +221,31 @@ io.on('connection', (socket) => {
 
     console.log('WEB SOCKET CONNECTED')
 
+    socket.on('button', (data) => {
+        let objectData = JSON.parse(data)
+        console.log(objectData.id)
+
+        if (objectData.id === 'stand') {
+            console.log('stand')
+            clearInterval(stepTimeout)
+            serialWrite(14, 60, 14, 60, 27, 66, 27, 66)
+        }
+        if (objectData.id === 'walk') {
+            console.log('walk')
+            walk()
+        }
+        if (objectData.id === 'sit') {
+            console.log('sit')
+            clearInterval(stepTimeout)
+            serialWrite(50, 60, 50, 60, 20, 0, 20, 0)
+        }
+        if (objectData.id === 'leg') {
+            console.log('leg')
+            clearInterval(stepTimeout)
+            serialWrite(120, 30, 30, 60, 20, 20, 20, 20)
+        }
+
+    })
 
     socket.on('sliders', (data) => {
         let objectData = JSON.parse(data)
