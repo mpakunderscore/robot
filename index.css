@@ -13,7 +13,9 @@ main {
 }
 
 .header {
-    width: 100%;
+    max-width: 100%;
+    /*max-height: 200px;*/
+    border-radius: 8px;
 }
 
 .section {
@@ -45,7 +47,7 @@ main {
 .block {
     background-color: #1a1a1a;
     padding: 1.5rem;
-    border-radius: 6px;
+    border-radius: 8px;
 }
 
 .feature-title {
@@ -71,3 +73,25 @@ main {
     border-radius: 8px;
 }
 
+@media (max-width: 800px) {
+    main {
+        padding: 0;
+    }
+    .header {
+        border-radius: 0;
+    }
+    .gallery {
+        flex-direction: column;
+    }
+    .gallery img {
+        border-radius: 0;
+        height: auto;
+    }
+    .section {
+        padding: 0 2rem;
+    }
+    .block {
+        border-radius: 0;
+        padding: 2rem;
+    }
+}
